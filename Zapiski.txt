@@ -1,0 +1,25 @@
+Komande 
+
+C-c C-c ......... split case
+C-c C-. ......... Goal
+C-c C-r ......... ? v lukno
+C-c C-l ......... reload
+C-c C-space ..... preveri če je pravilno izpolnjena lukna
+C-c C-a .........  autofill lukno
+C-c C-f ......... next Goal
+C-C C-b ......... previous Goal
+C-c C-r ......... ? in pol ti nardi 
+C-c C-, ......... show currnet goal
+
+
+
+Simboli 
+
+\<      ⟨
+\>      ⟩
+\==     ≡
+\r       →
+
+\qed    ∎
+\o      ∘
+≃      \~-

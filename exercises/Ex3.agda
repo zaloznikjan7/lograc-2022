@@ -82,7 +82,9 @@ take-n xs = {!!}
 -}
 
 take-n' : {A : Set} {n m : ℕ} → Vec A (m + n) → Vec A n
-take-n' xs = {!!}
+take-n' {A} {n} {m} xs = take-n (subst (Vec A) (+-comm m n) xs)
+
+
 
 
 ----------------
@@ -114,11 +116,24 @@ list-vec (x ∷ xs) = x ∷ list-vec xs
    `fun-ext` (see the beginning of the file, under stdlib imports).
 -}
 
+{-
 list-vec-list : {A : Set}
               → vec-list ∘ list-vec ≡ id {A = List A}
 
-list-vec-list = {!!}
+list-vec-list = fun-ext list-vec-list-aux 
 
+   where
+
+      list-vec-list-aux:(xs : List A) → (vec-list ∘ list-vec) xs ≡ id xs
+      list-vec-list-aux [] = 
+         begin 
+            (vec-list ∘ list-vec)[]
+         ≡⟨⟩
+            []
+         ≡⟨⟩
+            id []
+         ∎
+-}
 {-
    Note: The dual lemma, showing that `list-vec` is the left inverse
    of `vec-list` is surprisingly involved---see last week's exercise
@@ -155,7 +170,8 @@ lookup-total-Σ : {A : Set} {n : ℕ}
                → i < n
                → Σ[ x ∈ A ] (lookup xs i ≡ just x)
 
-lookup-total-Σ xs i p = {!!}
+lookup-total-Σ (x ∷ xs) zero p = x , refl
+lookup-total-Σ (x ∷ xs) (suc i) (s≤s p) = lookup-total-Σ xs i p 
 
 
 ----------------
@@ -173,7 +189,9 @@ lookup-total-Σ xs i p = {!!}
 -}
 
 vec-list-Σ : {A : Set} {n : ℕ} → Vec A n → Σ[ xs ∈ List A ] (length xs ≡ n)
-vec-list-Σ xs = {!!}
+vec-list-Σ [] = [] , refl
+vec-list-Σ (x ∷ xs) with vec-list-Σ xs
+... | xs' , p = (x ∷ xs') , cong suc p
 
 
 ----------------
@@ -250,7 +268,11 @@ open _≃_
           ≃
           Σ[ xy ∈ Σ[ x ∈ A ] (B x) ] (C (proj₁ xy) (proj₂ xy))
         
-Σ-assoc = {!!}
+Σ-assoc = record {
+   to      = λ (x , y , z) → (x , y) , z ;
+   from    = λ ((x , y), z) → x , y , z ;
+   from∘to = λ xys → refl ;
+   to∘from = λ xyz → refl }
 
 {-
    Second, prove the same thing using copatterns. For a reference on copatterns,
@@ -263,7 +285,13 @@ open _≃_
           Σ[ xy ∈ Σ[ x ∈ A ] (B x) ] (C (proj₁ xy) (proj₂ xy))
 
 Σ-assoc' = {!!}
+{-
+to      Σ-assoc' (x , y , z) → (x , y) , z
+from    Σ-assoc' ((x , y), z) → x , y , z 
+from∘to Σ-assoc' _ = refl 
+to∘from Σ-assoc' _ = refl 
 
+-}
 
 ----------------
 -- Exercise 7 --
@@ -276,9 +304,25 @@ open _≃_
    together with the lemmas we imported from `Data.List.Properties`.
 -}
 
+{-
 ≃-List : {A B : Set} → A ≃ B → List A ≃ List B
-≃-List = {!!}
+≃-List iso = record {
+   to      = map (to iso) ;
+   from    = map (from iso) ;
+   from∘to = λ xs → {
+      begin
+         map (from iso) (map (to iso) xs)
+      ≡⟨ sym (map-compose xs) ⟩
+         map (from iso ∘ to iso) xs
+      ≡⟨ cong (λ f → map f xs) (fun-ext (from∘to iso)) ⟩   
+         map id xs
+      ≡⟨ map-id xs ⟩
+         xs
+      ∎ ;
+   };
+   to∘from = }
 
+-}
 
 ----------------
 -- Exercise 8 --
